@@ -1,5 +1,5 @@
 {
-  "name": "leadership-project",
+  "name": "leadership-connections",
   "version": "0.0.0",
   "description": "An application which pairs students together",
   "license": "MPL-2.0",
@@ -11,13 +11,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gurpreetatwal/leadership-project.git"
+    "url": "git+https://github.com/gurpreetatwal/leadership-connections.git"
   },
   "author": "Gurpreet Atwal",
   "bugs": {
-    "url": "https://github.com/gurpreetatwal/leadership-project/issues"
+    "url": "https://github.com/gurpreetatwal/leadership-connections/issues"
   },
-  "homepage": "https://github.com/gurpreetatwal/leadership-project#readme",
+  "homepage": "https://github.com/gurpreetatwal/leadership-connections#readme",
   "dependencies": {
     "convict": "^4.0.1",
     "koa": "^2.4.1",
