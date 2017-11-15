@@ -17,6 +17,9 @@
     "url": "https://github.com/gurpreetatwal/leadership-project/issues"
   },
   "homepage": "https://github.com/gurpreetatwal/leadership-project#readme",
+  "dependencies": {
+    "convict": "^4.0.1"
+  },
   "devDependencies": {
     "eslint": "^4.11.0"
   }
