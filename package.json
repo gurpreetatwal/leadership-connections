@@ -4,6 +4,10 @@
   "description": "An application which pairs students together",
   "license": "MPL-2.0",
   "main": "index.js",
+  "scripts": {
+    "test": "npm run lint -s",
+    "lint": "eslint ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gurpreetatwal/leadership-project.git"
@@ -12,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/gurpreetatwal/leadership-project/issues"
   },
-  "homepage": "https://github.com/gurpreetatwal/leadership-project#readme"
+  "homepage": "https://github.com/gurpreetatwal/leadership-project#readme",
+  "devDependencies": {
+    "eslint": "^4.11.0"
+  }
 }
