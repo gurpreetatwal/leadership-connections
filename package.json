@@ -5,6 +5,7 @@
   "license": "MPL-2.0",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "npm run lint -s",
     "lint": "eslint ."
   },
@@ -18,7 +19,10 @@
   },
   "homepage": "https://github.com/gurpreetatwal/leadership-project#readme",
   "dependencies": {
-    "convict": "^4.0.1"
+    "convict": "^4.0.1",
+    "koa": "^2.4.1",
+    "koa-router": "^7.3.0",
+    "koa-static": "^4.0.1"
   },
   "devDependencies": {
     "eslint": "^4.11.0"
