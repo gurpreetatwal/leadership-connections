@@ -9,6 +9,7 @@ const Router = require('koa-router');
 
 const config = require('./config');
 
+require('./lib/db');
 const app = new Koa();
 const router = new Router();
 
