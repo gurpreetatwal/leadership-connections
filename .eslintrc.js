@@ -12,6 +12,7 @@ const config = {
     node: true
   },
   rules: {
+    'strict': [E, 'safe'],
     'indent': [E, 2],
     'linebreak-style': [E, 'unix'],
     'quotes': [E, 'single'],
