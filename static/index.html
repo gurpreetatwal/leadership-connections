@@ -44,10 +44,19 @@
         min-height: auto;
         align-items: center;
       }
+
+      #graph-container {
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        position: absolute;
+      }
     </style>
 
   </head>
   <body>
+    <div id="graph-container"></div>
     <form action="#">
       <div id="main" class="mdl-card mdl-shadow--2dp ">
         <div class="mdl-textfield mdl-js-textfield">
@@ -56,5 +65,26 @@
         </div>
       </div>
     </form>
+
+    <!-- 3rd Party Libs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.1/sigma.min.js" integrity="sha256-ii2D7w2jthCadZtIl2OjRn2vu1iEtGWcOrmd+UOZorc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.1/plugins/sigma.plugins.animate.min.js" integrity="sha256-D65uSr6qp3GRxCPrwPhBUaXXFsKoFqBtyIwxyspHrho=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.1/plugins/sigma.layout.noverlap.min.js" integrity="sha256-v8Yw4oU0hwLlTu4QhmJLxKSDkmXFubs1lYHavjYB2dg=" crossorigin="anonymous"></script>
+
+    <!-- Custom Scripts -->
+    <script src="js/sigma.renderer.js"></script>
+    <script src="js/student-graph.js"></script>
+    <script>
+
+      fetch('/students')
+        .then((r) => r.json())
+        .then(function(students) {
+
+          new StudentGraph('graph-container', students);
+          console.log(students);
+
+        });
+
+    </script>
   </body>
 </html>
