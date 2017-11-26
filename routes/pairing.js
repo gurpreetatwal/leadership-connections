@@ -85,15 +85,16 @@ router.get('/', url, async (ctx, next) => {
     .where(function() {
       this.where('student_1', student.id)
         .orWhere('student_2', student.id);
-    })
-    .orderBy('week', 'asc');
+    });
 
   if (pairings.length === required) {
-    return ctx.response.body = await attachStudents(pairings);
+    return ctx.body = _.sortBy(await attachStudents(pairings), 'week');
   }
 
-  for (let week = pairings.length + 1; week <= required; week++) {
+  const done = _.map(pairings, 'week');
 
+  for (let week = 0; week <= required; week++) {
+    if (done.includes(week)) continue;
     // TODO use knex for this
     const result = await knex.raw(`
       select b.id
@@ -103,7 +104,7 @@ router.get('/', url, async (ctx, next) => {
       and not exists (
         select student_2
         from pairing
-        where (student_1 = b.id OR student_2 = b.id AND week = 1)
+        where ((student_1 = b.id OR student_2 = b.id) AND week = ${week})
           or (
             student_1 in (a.id, b.id) AND student_2 in (a.id, b.id)
           )
@@ -124,7 +125,8 @@ router.get('/', url, async (ctx, next) => {
     pairings.push(pairing);
   }
 
-  ctx.response.body = await attachStudents(pairings);
+  ctx.body = await attachStudents(pairings);
+  ctx.body = _.sortBy(ctx.body, 'week');
 
 });
 
