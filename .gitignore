@@ -1,6 +1,9 @@
 # Secrets
 config/secret
 
+# Uploaded images
+static/images
+
 # Packages
 node_modules
 
