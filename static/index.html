@@ -43,6 +43,10 @@
         background: #ecf0f1;
       }
 
+      .center {
+        text-align: center;
+      }
+
       .mdl-card {
         min-height: auto;
         align-items: center;
@@ -79,6 +83,20 @@
         margin-bottom: 32px;
       }
 
+      #connection-current {
+        width: 100%;
+        padding: 0 32px;
+      }
+
+      #connection-previous {
+        width:100%;
+        margin-top: 16px;
+        border-top: 1px solid #ccc;
+        padding: 16px;
+        max-height: 40vh;
+        overflow-y: scroll;
+      }
+
     </style>
 
   </head>
@@ -108,6 +126,39 @@
 
       </div>
 
+      <div v-if="pairings" style="margin-top: 16px;" class="mdl-card mdl-shadow--2dp">
+
+        <p class="center" style="padding: 16px 16px 0; font-size: 16px;">This Week's Connection</p>
+
+        <div id="connection-current" class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">
+            <img class="mdl-list__item-avatar" :src="pairings[0].pair.image">
+            {{pairings[0].pair.name}}
+          </span>
+          <span class="mdl-list__item-secondary-action">
+            <div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
+              <i class="material-icons">photo_library</i><input type="file" id="uploadBtn">
+            </div>
+          </span>
+        </div>
+
+        <ul id="connection-previous" class="mdl-list">
+          <p class="center">Previous Connections<br><small>(in descending order)</small></p>
+          <li v-for="pairing in pairings" class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+              <img class="mdl-list__item-avatar" :src="pairing.pair.image">
+              {{pairing.pair.name}}
+            </span>
+            <span class="mdl-list__item-secondary-action">
+              <div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
+                <i class="material-icons">photo_library</i><input type="file" id="uploadBtn">
+              </div>
+            </span>
+          </li>
+
+        </ul>
+
+      </div>
     </main>
 
     <!-- 3rd Party Libs -->
@@ -122,6 +173,7 @@
 
       const data = {
         signup: false,
+        pairings: false,
       };
 
 const app = new Vue({
@@ -134,6 +186,7 @@ function addTypedEvent(el) {
   const cb = () => el.dispatchEvent(new CustomEvent('typed', {detail: el.value}));
   el.addEventListener('input', function() {
     data.signup = false;
+    data.pairings = false;
     clearTimeout(timerId);
     timerId = setTimeout(cb, 1000);
   });
@@ -151,13 +204,18 @@ function getStudent({detail: name}) {
     .then((r) => r.json())
     .then(function(pairings) {
 
-      console.log(pairings);
-
+      data.signup = false;
+      data.pairings = pairings.map((pair) => ({
+        week: pair.week,
+        image: pair.image,
+        pair: pair.student_1.name.toLowerCase() === name.toLowerCase() ? pair.student_2 : pair.student_1,
+      })).reverse();
     })
     .catch(function(e) {
 
       if (e.response.status === 404) {
         data.signup = true;
+        data.pairings = false;
       }
 
     });
