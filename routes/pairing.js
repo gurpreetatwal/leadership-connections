@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const Promise = require('bluebird');
 const Router = require('koa-router');
 const moment = require('moment');
 const parser = require('koa-body');
@@ -16,17 +17,21 @@ const weeks = 15;
 const classId = 'd0257fa9-ebb3-4c25-b880-e13740b2334c';
 
 async function attachStudents(pairings) {
+  return Promise.map(pairings, async function(pair) {
 
+    const [[student_1], [student_2]] = await Promise.join(
+      knex.select().from('student').where('id', pair.student_1),
+      knex.select().from('student').where('id', pair.student_2)
+    );
 
-  // TODO ew, this needs to be parallel
-  for (let i = 0; i < pairings.length; i++) {
-    const pair = pairings[i];
-    pair.student_1 = (await knex.select().from('student').where('id', pair.student_1))[0];
-    pair.student_2 = (await knex.select().from('student').where('id', pair.student_2))[0];
-  }
+    student_1.name = _.startCase(student_1.name);
+    student_2.name = _.startCase(student_2.name);
 
-  return pairings;
+    pair.student_1 = student_1;
+    pair.student_2 = student_2;
+    return pair;
 
+  });
 }
 
 router.get('/', parser(url), async (ctx, next) => {

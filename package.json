@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/gurpreetatwal/leadership-connections#readme",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "convict": "^4.0.1",
     "knex": "^0.14.1",
     "koa": "^2.4.1",
