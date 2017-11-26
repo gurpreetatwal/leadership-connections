@@ -108,6 +108,7 @@ router.get('/', url, async (ctx, next) => {
             student_1 in (a.id, b.id) AND student_2 in (a.id, b.id)
           )
       )
+      order by random()
       limit 1;
      `);
 
