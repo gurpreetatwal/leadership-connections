@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8">
     <title>Leadership Connections</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue-amber.min.css" />
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
@@ -12,7 +11,7 @@
     <style>
       html {
         height: 100%;
-        font-family: 'Raleway', sans-serif;
+        font-family: "Roboto","Helvetica","Arial",sans-serif;
 
         background: #1c92d2;
         background: -webkit-linear-gradient(to bottom, #f2fcfe, #1c92d2);
@@ -39,7 +38,7 @@
         justify-content: center;
       }
 
-      p {
+      p.signup {
         padding: 15px;
         background: #ecf0f1;
       }
@@ -89,7 +88,7 @@
     <main id="app">
       <div class="mdl-card mdl-shadow--2dp">
 
-        <p v-show="signup"> Looks like you haven't signed up yet, please upload a profile image and click the submit but to signup. </p>
+        <p class="signup" v-show="signup"> Looks like you haven't signed up yet, please upload a profile image and click the submit but to signup. </p>
 
         <div class="mdl-textfield mdl-js-textfield">
           <input class="mdl-textfield__input" type="text" id="sample1">
