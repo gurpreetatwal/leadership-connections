@@ -11,7 +11,6 @@ const config = require('./config');
 const app = new Koa();
 const router = new Router();
 
-router.use('/class', require('./routes/class').routes());
 router.use('/student', require('./routes/student').routes());
 
 app.use(serve(path.join(__dirname, 'static')));
