@@ -26,6 +26,7 @@ window.StudentGraph = (function(graph) {
         settings: {
           minNodeSize: 8,
           maxNodeSize: 16,
+          defaultLabelColor: '#fff',
         }
       });
 
