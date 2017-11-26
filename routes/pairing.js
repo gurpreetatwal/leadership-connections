@@ -6,10 +6,13 @@ const Router = require('koa-router');
 const moment = require('moment');
 const parser = require('koa-body');
 
+const config = require('../config');
 const knex = require('../lib/knex');
+const upload = require('../lib/upload');
 
 const router = new Router();
-const url = {urlencoded: true, multipart: false, json: false};
+const url = parser({urlencoded: true, multipart: false, json: false});
+const form = parser({json: false, urlencoded: false, multipart: true});
 
 // TODO these should not be hardcoded, but should be part of class data
 const start = moment('2017-08-24');
@@ -34,7 +37,30 @@ async function attachStudents(pairings) {
   });
 }
 
-router.get('/', parser(url), async (ctx, next) => {
+router.post('/:id', form, async (ctx, next) => {
+
+  const image = _.get(ctx, 'request.body.files.image');
+  ctx.assert(image, 400, 'Each student must have an image');
+
+  ctx.file = image;
+
+  await next();
+
+  ctx.body = await knex('pairing')
+    .update({
+      image: `${config.get('host')}/images/${ctx.filename}`,
+    })
+    .returning(['id', 'image'])
+    .where({
+      id: ctx.params.id,
+    });
+
+  ctx.body = ctx.body[0];
+
+}, upload);
+
+
+router.get('/', url, async (ctx, next) => {
 
   const name = _.get(ctx, 'request.query.name');
   ctx.assert(name, 400, 'must pass student name');
