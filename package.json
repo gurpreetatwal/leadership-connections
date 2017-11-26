@@ -22,8 +22,11 @@
     "convict": "^4.0.1",
     "knex": "^0.14.1",
     "koa": "^2.4.1",
+    "koa-body": "^2.5.0",
     "koa-router": "^7.3.0",
     "koa-static": "^4.0.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.19.2",
     "pg": "^7.4.0"
   },
   "devDependencies": {
