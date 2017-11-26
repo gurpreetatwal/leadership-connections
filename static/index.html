@@ -178,7 +178,7 @@
             {{connections[0].pair.name}}
           </span>
           <span class="mdl-list__item-secondary-action">
-            <a v-if="connections[0].image" :href="connections[0].image" target="_blank">
+            <a v-if="connections[0].image" :href="connections[0].fbImage" target="_blank">
               <img class="connection-image" :src="connections[0].image">
             </a>
             <div v-else class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
@@ -196,7 +196,7 @@
               {{connection.pair.name}}
             </span>
             <span class="mdl-list__item-secondary-action">
-              <a v-if="connection.image" :href="connection.image" target="_blank">
+              <a v-if="connection.image" :href="connection.fbImage" target="_blank">
                 <img class="connection-image" :src="connection.image">
               </a>
               <div v-else class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
@@ -299,8 +299,8 @@
               .then((r) => r.json())
               .then((res) => {
                 const i = this.connections.findIndex(c => c.id === id);
-                console.log(res);
                 this.connections[i].image = res.image;
+                this.connections[i].fbImage = `https://www.facebook.com/${res.fb_image}`;
               })
           },
           validateImage({target}) {
@@ -347,6 +347,7 @@
               id: pair.id,
               week: pair.week,
               image: pair.image,
+              fbImage: `https://www.facebook.com/${pair.fb_image}`,
               pair: pair.student_1.name.toLowerCase() === this.name.toLowerCase() ? pair.student_2 : pair.student_1,
             }));
           },

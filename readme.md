@@ -9,6 +9,8 @@ This can be solved by exchanging a "long-lived" user access token for a page acc
 So finally the steps:
 
 1. Go to [Facebook Graph Explorer](https://developers.facebook.com/tools/explorer/) and obtain a normal user access token.
+  - Make sure to change the appliction to "UGBA Connections"
+  - Required permissions: `publish_actions`, `publish_pages`, `manage_pages`, `pages_show_list`
 2. Hop over to the terminal and run this command after setting the correct env vars
 ```bash
 export LONG_AT=$(http --body "https://graph.facebook.com/v2.11/oauth/access_token?grant_type=fb_exchange_token&client_id=$CLIENT_ID&client_secret=$CLIENT_SECRET&fb_exchange_token=$USER_AT" | jq --raw-output ".access_token")

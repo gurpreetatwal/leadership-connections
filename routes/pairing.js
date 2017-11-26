@@ -1,10 +1,12 @@
 'use strict';
 
 const _ = require('lodash');
+const axios = require('axios');
 const Promise = require('bluebird');
 const Router = require('koa-router');
 const moment = require('moment');
 const parser = require('koa-body');
+const qs = require('querystring');
 
 const config = require('../config');
 const knex = require('../lib/knex');
@@ -13,6 +15,9 @@ const upload = require('../lib/upload');
 const router = new Router();
 const url = parser({urlencoded: true, multipart: false, json: false});
 const form = parser({json: false, urlencoded: false, multipart: true});
+const request = axios.create({
+  baseURL: 'https://graph.facebook.com/v2.11',
+});
 
 // TODO these should not be hardcoded, but should be part of class data
 const start = moment('2017-08-24');
@@ -46,11 +51,18 @@ router.post('/:id', form, async (ctx, next) => {
 
   await next();
 
+  const url = `${config.get('host')}/images/${ctx.filename}`;
+  const res = await request.post('/ugba155connections/photos', qs.stringify({
+    url,
+    access_token: config.get('facebook.token'),
+  }));
+
   ctx.body = await knex('pairing')
     .update({
-      image: `${config.get('host')}/images/${ctx.filename}`,
+      image: url,
+      fb_image: res.data.id,
     })
-    .returning(['id', 'image'])
+    .returning(['id', 'image', 'fb_image'])
     .where({
       id: ctx.params.id,
     });
