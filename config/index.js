@@ -18,6 +18,12 @@ const config = convict({
     env: 'PORT',
     arg: 'port',
   },
+  host: {
+    doc: 'URL pointing to the hosted code, used as base for static assets',
+    format: 'url',
+    default: '',
+    env: 'HOST',
+  },
   database: {
     host: {
       doc: 'hostname for the database server',
