@@ -38,14 +38,26 @@
         justify-content: center;
       }
 
-      p.signup {
-        padding: 15px;
-        background: #ecf0f1;
+      small {
+        color: #777;
+        font-size: 0.7em;
       }
 
       .center {
         text-align: center;
       }
+
+      .error {
+        margin: 0;
+        color: white;
+        background: #e74c3c;
+      }
+
+      p.signup {
+        padding: 15px;
+        background: #ecf0f1;
+      }
+
 
       .mdl-card {
         min-height: auto;
@@ -59,6 +71,7 @@
         right: 0;
         position: absolute;
       }
+
       .mdl-button--file  input {
         cursor: pointer;
         height: 100%;
@@ -104,54 +117,73 @@
     <div id="graph-container"></div>
 
     <main id="app">
-      <div class="mdl-card mdl-shadow--2dp">
 
-        <p class="signup" v-show="signup"> Looks like you haven't signed up yet, please upload a profile image and click the submit but to signup. </p>
+      <!-- Main Card -->
+      <section class="mdl-card mdl-shadow--2dp">
+
+        <p class="signup center" v-show="signup">
+          Looks like you haven't registered yet!<br>Please register by uploading a profile picture by clicking on the icon below.
+        </p>
 
         <div class="mdl-textfield mdl-js-textfield">
-          <input class="mdl-textfield__input" type="text" id="sample1">
+          <input class="mdl-textfield__input" type="text" v-model="name">
           <label class="mdl-textfield__label" for="sample1">Your name...</label>
         </div>
 
-        <div v-show="signup" class="mdl-textfield mdl-js-textfield mdl-textfield--file">
-          <input class="mdl-textfield__input" placeholder="Profile Picture" type="text" id="uploadFile" readonly/>
-          <div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
-            <i class="material-icons">photo_library</i><input type="file" id="uploadBtn">
+        <form v-show="signup" class="center" enctype="multipart/form-data" @submit.prevent.stop="submit">
+
+
+          <div style="padding: 0 0 20px" class="mdl-textfield mdl-js-textfield mdl-textfield--file">
+            <input class="mdl-textfield__input" placeholder="Profile Picture" type="text" readonly/>
+            <div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
+              <i class="material-icons">photo_library</i>
+              <input type="file" id="profile-image" accept="image/*" @change="validateImage" data-error="signupError" required>
+            </div>
           </div>
-        </div>
 
-        <button v-show="signup" id="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-          Signup
-        </button>
+          <p class="error" v-show="signupError">{{signupError}}</p>
 
-      </div>
+          <small> Profile picture can be at most 1MB</small>
 
-      <div v-if="pairings" style="margin-top: 16px;" class="mdl-card mdl-shadow--2dp">
+          <br>
+          <button id="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" :disabled="lock" >
+            Signup
+          </button>
+
+        </form>
+
+      </section>
+      <!-- /Main Card -->
+
+      <!-- Pairings Card -->
+      <div v-if="connections" style="margin-top: 16px;" class="mdl-card mdl-shadow--2dp">
 
         <p class="center" style="padding: 16px 16px 0; font-size: 16px;">This Week's Connection</p>
 
         <div id="connection-current" class="mdl-list__item">
           <span class="mdl-list__item-primary-content">
-            <img class="mdl-list__item-avatar" :src="pairings[0].pair.image">
-            {{pairings[0].pair.name}}
+            <img class="mdl-list__item-avatar" :src="connections[0].pair.image">
+            {{connections[0].pair.name}}
           </span>
           <span class="mdl-list__item-secondary-action">
             <div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
-              <i class="material-icons">photo_library</i><input type="file" id="uploadBtn">
+              <i class="material-icons">photo_library</i>
+              <input type="file" id="profile-image" accept="image/*" @change="validateImage" data-error="error" required>
             </div>
           </span>
         </div>
 
         <ul id="connection-previous" class="mdl-list">
           <p class="center">Previous Connections<br><small>(in descending order)</small></p>
-          <li v-for="pairing in pairings" class="mdl-list__item">
+          <li v-for="connection in connections" class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
-              <img class="mdl-list__item-avatar" :src="pairing.pair.image">
-              {{pairing.pair.name}}
+              <img class="mdl-list__item-avatar" :src="connection.pair.image">
+              {{connection.pair.name}}
             </span>
             <span class="mdl-list__item-secondary-action">
               <div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
-                <i class="material-icons">photo_library</i><input type="file" id="uploadBtn">
+                <i class="material-icons">photo_library</i>
+                <input type="file" :id="'connection-image-' + connection.week" accept="image/*" @change="validateImage" data-error="error" required>
               </div>
             </span>
           </li>
@@ -171,69 +203,112 @@
     <script src="js/student-graph.js"></script>
     <script>
 
-      const data = {
-        signup: false,
-        pairings: false,
-      };
+    //  fetch('/student')
+    //    .then((r) => r.json())
+    //    .then(function(students) {
+    //      new StudentGraph('graph-container', students);
+    //    });
 
-const app = new Vue({
-  el: '#app',
-  data,
-});
+      let typingTimer = null;
 
-function addTypedEvent(el) {
-  let timerId = null;
-  const cb = () => el.dispatchEvent(new CustomEvent('typed', {detail: el.value}));
-  el.addEventListener('input', function() {
-    data.signup = false;
-    data.pairings = false;
-    clearTimeout(timerId);
-    timerId = setTimeout(cb, 1000);
-  });
-}
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#Images_types
+      const SAFE_TYPES =['image/gif', 'image/jpeg', 'image/png', 'image/svg+xml'];
 
-function getStudent({detail: name}) {
+      new Vue({
+        el: '#app',
+        data: {
+          name: null,
+          lock: false,
+          signup: false,
+          connections: false,
+          signupError: null,
+        },
+        watch: {
+          name() {
+            this.clear();
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(this.getStudent, 1000);
+          },
+        },
+        methods: {
+          clear() {
+            this.lock = false;
+            this.signup = false;
+            this.connections = false;
+          },
+          submit() {
+            if (this.lock) return;
 
-  fetch(`/pairing?name=${name}`)
-    .then((r) => {
-      if (r.ok) return r;
-      const e = new Error();
-      e.response = r;
-      throw e;
-    })
-    .then((r) => r.json())
-    .then(function(pairings) {
+            const target = document.getElementById('profile-image');
+            const image = this.validateImage({target});
 
-      data.signup = false;
-      data.pairings = pairings.map((pair) => ({
-        week: pair.week,
-        image: pair.image,
-        pair: pair.student_1.name.toLowerCase() === name.toLowerCase() ? pair.student_2 : pair.student_1,
-      })).reverse();
-    })
-    .catch(function(e) {
+            if (!image) return;
 
-      if (e.response.status === 404) {
-        data.signup = true;
-        data.pairings = false;
-      }
+            const fd = new FormData();
+            fd.append('name', this.name);
+            fd.append('image', image, image.name);
 
-    });
-}
+            this.lock = true;
 
-const input = document.getElementById('sample1');
-addTypedEvent(input);
-input.addEventListener('typed', getStudent, true);
+            fetch("/student", {method: "POST", body: fd})
+              .then((res) => {
+                this.lock = false;
+                this.getStudent();
+              })
+              .catch(function(e) {
+                this.lock = false;
+                throw e;
+              });
 
+          },
+          validateImage({target}) {
+            const image = target.files[0];
+            const errorProp = target.attributes['data-error'].value;
+            this[errorProp] = null;
 
-fetch('/student')
-  .then((r) => r.json())
-  .then(function(students) {
+            if (!SAFE_TYPES.includes(image.type)) {
+              this[errorProp] = 'file must be a GIF, JPEG, PNG, SVG';
+              return false;
+            }
 
-    new StudentGraph('graph-container', students);
-    console.log(students);
+            if (image.size > 1000 * 1000) {
+              this[errorProp] = 'Image must be smaller than 1MB';
+              return false;
+            }
+            return image;
+          },
+          getStudent() {
 
-  });
+            fetch(`/pairing?name=${this.name}`)
+              .then((r) => {
+                if (r.ok) return r;
+                const e = new Error();
+                e.response = r;
+                throw e;
+              })
+              .then((r) => r.json())
+              .then((pairings) => {
+                this.clear();
+                this.connections = this.formatPairings(pairings);
+              })
+              .catch((e) => {
+
+                if (e.response.status === 404) {
+                  this.clear();
+                  this.signup = true;
+                }
+
+              });
+          },
+          formatPairings(pairings) {
+            return pairings.reverse().map((pair) => ({
+              week: pair.week,
+              image: pair.image,
+              pair: pair.student_1.name.toLowerCase() === this.name.toLowerCase() ? pair.student_2 : pair.student_1,
+            }));
+          },
+        },
+      });
 
     </script>
   </body>
