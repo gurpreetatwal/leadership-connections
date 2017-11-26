@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="bg1">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>Leadership Connections</title>
@@ -16,26 +16,13 @@
         background: #1c92d2;
         background: -webkit-linear-gradient(to bottom, #f2fcfe, #1c92d2);
         background: linear-gradient(to bottom, #f2fcfe, #1c92d2);
-        background-position: 50%;
-        background-attachment: fixed;
-        background-size: cover;
-        background-repeat: no-repeat;
-      }
-
-      .bg1 {
+        /*
         background: url('background.jpg');
         background-position: 50%;
         background-attachment: fixed;
         background-size: cover;
         background-repeat: no-repeat;
-      }
-
-      .bg2 {
-        background: url('background_2.jpg');
-        background-position: 50%;
-        background-attachment: fixed;
-        background-size: cover;
-        background-repeat: no-repeat;
+        */
       }
 
       * {
@@ -85,7 +72,6 @@
         left: 0;
         right: 0;
         position: absolute;
-        background: rgba(0, 0, 0, 0.5);
       }
 
       .mdl-button--file  input {
@@ -151,8 +137,6 @@
           <input class="mdl-textfield__input" type="text" v-model="name">
           <label class="mdl-textfield__label" for="sample1">Your name...</label>
         </div>
-
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" @click="changebg"> change background </button>
 
         <form v-show="signup" class="center" enctype="multipart/form-data" @submit.prevent.stop="submit">
 
@@ -362,15 +346,6 @@
               image: pair.image,
               pair: pair.student_1.name.toLowerCase() === this.name.toLowerCase() ? pair.student_2 : pair.student_1,
             }));
-          },
-          changebg() {
-            const el = document.getElementsByTagName('html')[0];
-            if (el.classList.contains('bg1')) {
-              el.classList.replace('bg1', 'bg2');
-            } else {
-              el.classList.replace('bg2', 'bg1');
-            }
-
           },
         },
       });
