@@ -49,6 +49,8 @@
 
       .error {
         margin: 0;
+        width: 100%;
+        text-align: center;
         color: white;
         background: #e74c3c;
       }
@@ -110,6 +112,12 @@
         overflow-y: scroll;
       }
 
+      .connection-image {
+        height: 40px;
+        width: auto;
+        border-radius: 25%;
+      }
+
     </style>
 
   </head>
@@ -158,6 +166,7 @@
       <!-- Pairings Card -->
       <div v-if="connections" style="margin-top: 16px;" class="mdl-card mdl-shadow--2dp">
 
+        <p class="error" v-show="error">{{error}}</p>
         <p class="center" style="padding: 16px 16px 0; font-size: 16px;">This Week's Connection</p>
 
         <div id="connection-current" class="mdl-list__item">
@@ -166,9 +175,12 @@
             {{connections[0].pair.name}}
           </span>
           <span class="mdl-list__item-secondary-action">
-            <div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
+            <a v-if="connections[0].image" :href="connections[0].image" target="_blank">
+              <img class="connection-image" :src="connections[0].image">
+            </a>
+            <div v-else class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
               <i class="material-icons">photo_library</i>
-              <input type="file" id="profile-image" accept="image/*" @change="validateImage" data-error="error" required>
+              <input type="file" accept="image/*" @change="uploadImage" data-error="error" :data-id="connections[0].id" required>
             </div>
           </span>
         </div>
@@ -181,9 +193,12 @@
               {{connection.pair.name}}
             </span>
             <span class="mdl-list__item-secondary-action">
-              <div class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
+              <a v-if="connection.image" :href="connection.image" target="_blank">
+                <img class="connection-image" :src="connection.image">
+              </a>
+              <div v-else class="mdl-button mdl-button--primary mdl-button--icon mdl-button--file">
                 <i class="material-icons">photo_library</i>
-                <input type="file" :id="'connection-image-' + connection.week" accept="image/*" @change="validateImage" data-error="error" required>
+                <input type="file" accept="image/*" @change="uploadImage" data-error="error" :data-id="connection.id" required>
               </div>
             </span>
           </li>
@@ -222,6 +237,7 @@
           signup: false,
           connections: false,
           signupError: null,
+          error: null,
         },
         watch: {
           name() {
@@ -250,7 +266,7 @@
 
             this.lock = true;
 
-            fetch("/student", {method: "POST", body: fd})
+            fetch('/student', {method: 'POST', body: fd})
               .then((res) => {
                 this.lock = false;
                 this.getStudent();
@@ -260,6 +276,29 @@
                 throw e;
               });
 
+          },
+          uploadImage({target}) {
+            const id = target.attributes['data-id'].value;
+            const image = this.validateImage({target});
+
+            if (!image) return;
+
+            const fd = new FormData();
+            fd.append('image', image, image.name);
+
+            fetch(`/pairing/${id}`, {method: 'POST', body: fd})
+              .then((r) => {
+                if (r.ok) return r;
+                const e = new Error();
+                e.response = r;
+                throw e;
+              })
+              .then((r) => r.json())
+              .then((res) => {
+                const i = this.connections.findIndex(c => c.id === id);
+                console.log(res);
+                this.connections[i].image = res.image;
+              })
           },
           validateImage({target}) {
             const image = target.files[0];
@@ -302,6 +341,7 @@
           },
           formatPairings(pairings) {
             return pairings.reverse().map((pair) => ({
+              id: pair.id,
               week: pair.week,
               image: pair.image,
               pair: pair.student_1.name.toLowerCase() === this.name.toLowerCase() ? pair.student_2 : pair.student_1,
