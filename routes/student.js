@@ -10,7 +10,7 @@ router.get('/', async (ctx, next) => {
   await next();
   // TODO this should fetch from a database
   ctx.response.type = 'application/json';
-  ctx.response.body = fs.createReadStream(path.join(__dirname, '..', 'students.json'));
+  ctx.response.body = fs.createReadStream(path.join(__dirname, '..', 'seeds', 'students.json'));
 });
 
 module.exports = router;
