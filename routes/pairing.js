@@ -133,7 +133,8 @@ router.get('/', url, async (ctx, next) => {
       image: null,
     };
 
-    await knex('pairing').insert(pairing);
+    const [id] = await knex('pairing').insert(pairing).returning('id');
+    pairing.id = id;
     pairings.push(pairing);
   }
 
