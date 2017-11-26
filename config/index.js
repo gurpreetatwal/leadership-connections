@@ -56,6 +56,14 @@ const config = convict({
       env: 'DB_DATABASE',
     },
   },
+  facebook: {
+    token: {
+      doc: 'a long lived facebook page access token, see readme',
+      format: String,
+      default: null,
+      env: 'FB_TOKEN',
+    },
+  },
 });
 
 const configFile = `${config.get('env')}.json`;
