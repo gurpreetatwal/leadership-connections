@@ -35,21 +35,31 @@ window.StudentGraph = (function(graph) {
     }
 
     _loadStudents(students) {
-
       return students.map((student, i) => {
-        return Sigma.canvas.nodes.image.cache(student.image).then(() => {
-          this.sigma.graph.addNode({
-            id: 'n' + i,
-            label: student.name,
-            type: 'image',
-            url: student.image,
-            x: Math.random(),
-            y: Math.random(),
-            size: Math.random(),
-            color: colors[Math.floor(Math.random() * colors.length)]
-          });
-          this.sigma.refresh();
-        });
+        return Sigma.canvas.nodes.image.cache(student.image)
+          .then(() => {
+            this.sigma.graph.addNode({
+              id: 'n' + i,
+              label: student.name,
+              type: 'image',
+              url: student.image,
+              x: Math.random(),
+              y: Math.random(),
+              size: Math.random(),
+              color: colors[Math.floor(Math.random() * colors.length)]
+            });
+          })
+          .catch(() => {
+            this.sigma.graph.addNode({
+              id: 'n' + i,
+              label: student.name,
+              x: Math.random(),
+              y: Math.random(),
+              size: Math.random(),
+              color: colors[Math.floor(Math.random() * colors.length)]
+            });
+          })
+          .then(() => this.sigma.refresh());
       });
 
     }

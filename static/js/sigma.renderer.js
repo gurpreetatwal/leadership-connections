@@ -93,6 +93,7 @@
       delete promises[url];
     };
 
+    img.onerror = container.reject;
     img.src = url;
 
     return container.promise;
