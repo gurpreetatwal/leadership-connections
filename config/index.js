@@ -34,13 +34,13 @@ const config = convict({
     port: {
       doc: 'port for the database server',
       format: 'port',
-      default: null,
+      default: 5432,
       env: 'DB_PORT',
     },
     user: {
       doc: 'user to connect to database server as',
       format: String,
-      default: null,
+      default: 'postgres',
       env: 'DB_USER',
     },
     password: {
@@ -77,6 +77,6 @@ try {
   if (e.code !== 'ENOENT') throw e;
 }
 
-config.validate({allowed: 'strict'});
+config.validate({ allowed: 'strict' });
 
 module.exports = config;
