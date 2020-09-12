@@ -3,6 +3,8 @@
 const path = require('path');
 const convict = require('convict');
 
+convict.addFormats(require('convict-format-with-validator'));
+
 const config = convict({
   env: {
     doc: 'The application environment.',
