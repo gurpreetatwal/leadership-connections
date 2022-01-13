@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/gurpreetatwal/leadership-connections#readme",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "bluebird": "^3.5.5",
     "convict": "^6.0.0",
     "convict-format-with-validator": "^6.0.0",
