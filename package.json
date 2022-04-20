@@ -21,7 +21,7 @@
   "dependencies": {
     "axios": "^0.21.2",
     "bluebird": "^3.5.5",
-    "convict": "^6.0.0",
+    "convict": "^6.2.2",
     "convict-format-with-validator": "^6.0.0",
     "knex": "^0.21.5",
     "koa": "^2.5.2",
